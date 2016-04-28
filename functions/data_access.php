@@ -54,7 +54,7 @@ function get_result_set($sql) {
   
 }
 
-function get_result_set_prepared($sql) {
+function get_result_set_prepared($sql, $args) {
 
   $rows = array();
   $__config = get_config_data();
@@ -63,12 +63,11 @@ function get_result_set_prepared($sql) {
   if (isset($connection)) {
 
     mysqli_select_db($connection, $__config['dbname']);
-    $param = "a%";
     $statement = mysqli_prepare($connection, $sql);
 
     if ($statement) {
 
-      mysqli_stmt_bind_param($statement, "s", $param);
+      mysqli_stmt_bind_param($statement, $args[0]["arg_type"], $args[0]["arg_value"]);
       mysqli_stmt_execute($statement);
       $result = mysqli_stmt_get_result($statement);
       while ($row = mysqli_fetch_assoc($result)) {
