@@ -12,7 +12,7 @@ $sql = "select * from (select * from employee_view where LastName like 'b%') a o
 
 $sql_prepared = "select * from (select * from employee_view where LastName like ?) a order by LastName";
 
-$args = [["arg_name" => "search_string", "arg_value" => "m%", "arg_type" => "s"]];
+$args = [["arg_name" => "search_string", "arg_value" => "b%", "arg_type" => "s"]];
 
 $rows = get_result_set_prepared($sql_prepared, $args);
 
@@ -59,11 +59,11 @@ echo "<!-- " . $results_list . " -->";
       $("#test_grid").jqxGrid({
         source: adapter,
         columns: [
-          {text: "First Name", datafield: "FirstName", width: 200},
-          {text: "Last Name", datafield: "LastName", width: 200},
+          {text: "First Name", datafield: "FirstName", width: 100},
+          {text: "Last Name", datafield: "LastName", width: 100},
           {text: "Title", datafield: "JobTitle", width: 250}
         ],
-        width: 800
+        width: 470, height: 450
       });
 
     });
