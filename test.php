@@ -7,6 +7,7 @@
  */
 
 require_once($_SERVER['DOCUMENT_ROOT'] . "/functions/data_access.php");
+require_once($_SERVER['DOCUMENT_ROOT'] . "/mysqli_prepare_dyn.php");
 
 $sql = "select * from (select * from employee_view where LastName like 'b%') a order by LastName";
 
@@ -17,6 +18,8 @@ $args = [["arg_name" => "search_string", "arg_value" => "b%", "arg_type" => "s"]
 $rows = get_result_set_prepared($sql_prepared, $args);
 
 $results_list = json_encode($rows);
+
+$results_list = get_data();
 
 echo "<!-- " . $results_list . " -->";
 
