@@ -22,9 +22,9 @@ $results_list = json_encode($rows);
 $results_list = get_data();
 
 $results_list = get_result_set_prepared_dynamic(
-    "SELECT * FROM employee_view WHERE LastName LIKE ? OR BirthDate > ? OR JobTitle = ? ORDER BY FirstName",
-    array("c%", "1982-01-01", "Janitor"),
-    array("s", "s", "s"));
+    "SELECT * FROM employee_view WHERE /*LastName LIKE ? /*OR */ BirthDate > ? OR JobTitle = ? ORDER BY FirstName",
+    array("1985-01-01", "Production Technician - WC50"),
+    "ss");
 
 echo "<!-- " . $results_list . " -->";
 
@@ -61,7 +61,11 @@ echo "<!-- " . $results_list . " -->";
       var source = {
         localdata: data,
         datatype: "json",
-        datafields: [{name: "FirstName", type: "string"},{name: "LastName", type: "string"}, {name: "JobTitle", type: "string"}]
+        datafields: [
+          {name: "FirstName", type: "string"},
+          {name: "LastName", type: "string"},
+          {name: "BirthDate", type: "string"},
+          {name: "JobTitle", type: "string"}]
       };
       var adapter = new $.jqx.dataAdapter(source);
       $("#test_grid").jqxGrid({
@@ -69,9 +73,10 @@ echo "<!-- " . $results_list . " -->";
         columns: [
           {text: "First Name", datafield: "FirstName", width: 100},
           {text: "Last Name", datafield: "LastName", width: 100},
+          {text: "Born", datafield: "BirthDate", width: 100},
           {text: "Title", datafield: "JobTitle", width: 250}
         ],
-        width: 470, height: 450
+        width: 570, height: 450
       });
 
     });

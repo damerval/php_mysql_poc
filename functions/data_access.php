@@ -104,12 +104,8 @@ function get_result_set_prepared_dynamic($sql, $arg_values, $arg_types) {
     if ($statement) {
       
       $args[] = &$statement;
-      
-      for ($i = 0; $i < count($arg_types); $i++) {
-        $types_string .= $arg_types[$i];
-      }      
-      $args[] = $types_string;
-      
+      $args[] = $arg_types;
+
       for ($i = 0; $i < count($arg_values); $i++) {
         $args[] = &$arg_values[$i];
       }
