@@ -15,13 +15,23 @@ function get_data() {
   
   mysqli_select_db($connection, $__config['dbname']);
   
-  $sql = "select * from employee_view where LastName like ?";
+  $sql = "select * from employee_view where LastName like ? or BirthDate > ? or JobTitle = ?
+          order by FirstName";
   
   $statement = mysqli_prepare($connection, $sql);
   
-  $arg = "b%";
-  
-  mysqli_stmt_bind_param($statement, "s", $arg);
+  $arg_values = array('c%', '1982-01-01', 'Janitor');
+  $arg_types = "sss";
+
+  $args = array();
+  $args[] = &$statement;
+  $args[] = $arg_types;
+
+  for ($i = 0; $i < count($arg_values); $i++) {
+    $args[] = &$arg_values[$i];
+  }
+
+  call_user_func_array('mysqli_stmt_bind_param', $args);
   
   mysqli_stmt_execute($statement);
   
@@ -35,4 +45,4 @@ function get_data() {
 
 }
 
-echo get_data();
+// echo get_data();

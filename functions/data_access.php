@@ -80,3 +80,50 @@ function get_result_set_prepared($sql, $args) {
   return $rows;
   
 }
+
+/** Returns a JSON document given a SQL statement with question marks, an array of types (s, i, d, b) 
+ * and a corresponding array of values as arguments. Uses connection parameters from config file. 
+ * @param $sql
+ * @param $arg_values
+ * @param $arg_types
+ * @return string
+ */
+function get_result_set_prepared_dynamic($sql, $arg_values, $arg_types) {
+  
+  $rows = array();
+  $__config = get_config_data();
+  $connection = db_connect();
+  $args = array();
+  $types_string = "";
+  
+  if (isset($connection)) {
+    
+    mysqli_select_db($connection, $__config['dbname']);
+    $statement = mysqli_prepare($connection, $sql);
+    
+    if ($statement) {
+      
+      $args[] = &$statement;
+      
+      for ($i = 0; $i < count($arg_types); $i++) {
+        $types_string .= $arg_types[$i];
+      }      
+      $args[] = $types_string;
+      
+      for ($i = 0; $i < count($arg_values); $i++) {
+        $args[] = &$arg_values[$i];
+      }
+      
+      call_user_func_array('mysqli_stmt_bind_param', $args);      
+      mysqli_stmt_execute($statement);      
+      $result = mysqli_stmt_get_result($statement);
+      
+      while ($row = mysqli_fetch_assoc($result)) {
+        $rows[] = $row;
+      }      
+    }    
+  }
+  
+  return json_encode($rows);
+  
+}

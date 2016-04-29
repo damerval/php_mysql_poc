@@ -21,6 +21,11 @@ $results_list = json_encode($rows);
 
 $results_list = get_data();
 
+$results_list = get_result_set_prepared_dynamic(
+    "SELECT * FROM employee_view WHERE LastName LIKE ? OR BirthDate > ? OR JobTitle = ? ORDER BY FirstName",
+    array("c%", "1982-01-01", "Janitor"),
+    array("s", "s", "s"));
+
 echo "<!-- " . $results_list . " -->";
 
 ?>

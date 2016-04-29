@@ -16,6 +16,7 @@ function multiply() {
         $result_value *= $arg;
       }
     }
+    
   } else return "You need to include at least one operand!";
 
   return "Multiplication result: " . $result_value;
