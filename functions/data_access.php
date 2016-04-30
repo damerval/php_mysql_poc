@@ -62,6 +62,7 @@ function get_result_set_prepared($sql, $args) {
 
   if (isset($connection)) {
 
+    mysqli_set_charset($connection, "utf8");
     mysqli_select_db($connection, $__config['dbname']);
     $statement = mysqli_prepare($connection, $sql);
 
@@ -97,7 +98,9 @@ function get_result_set_prepared_dynamic($sql, $arg_values, $arg_types) {
   $types_string = "";
   
   if (isset($connection)) {
-    
+
+    mysqli_set_charset($connection, "utf8");
+    $check_charset = mysqli_character_set_name($connection);
     mysqli_select_db($connection, $__config['dbname']);
     $statement = mysqli_prepare($connection, $sql);
     

@@ -2,32 +2,9 @@
 /**
  * Created by PhpStorm.
  * User: pdamerval
- * Date: 4/25/2016
- * Time: 9:54 AM
+ * Date: 4/29/2016
+ * Time: 11:17 AM
  */
-
-require_once($_SERVER['DOCUMENT_ROOT'] . "/functions/data_access.php");
-require_once($_SERVER['DOCUMENT_ROOT'] . "/mysqli_prepare_dyn.php");
-
-$sql = "select * from (select * from employee_view where LastName like 'b%') a order by LastName";
-
-$sql_prepared = "select * from (select * from employee_view where LastName like ?) a order by LastName";
-
-$args = [["arg_name" => "search_string", "arg_value" => "b%", "arg_type" => "s"]];
-
-$rows = get_result_set_prepared($sql_prepared, $args);
-
-$results_list = json_encode($rows);
-
-$results_list = get_data();
-
-$results_list = get_result_set_prepared_dynamic(
-    "SELECT * FROM employee_view WHERE LastName LIKE ? /*OR  BirthDate > ? OR JobTitle = ? */ ORDER BY FirstName",
-    array("S%"),
-    "s");
-
-echo "<!-- " . $results_list . " -->";
-
 ?>
 
 <!DOCTYPE html>
@@ -56,16 +33,15 @@ echo "<!-- " . $results_list . " -->";
 
     $(document).ready(function() {
 
-      var data = [];  // Contains the JSON dataset from the php code-behind
-      data = <?=(isset($results_list)?$results_list:"[]")?>;
+      var url = "/sample_helper.php";
       var source = {
-        localdata: data,
         datatype: "json",
         datafields: [
           {name: "FirstName", type: "string"},
           {name: "LastName", type: "string"},
           {name: "BirthDate", type: "string"},
-          {name: "JobTitle", type: "string"}]
+          {name: "JobTitle", type: "string"}],
+        url: url
       };
       var adapter = new $.jqx.dataAdapter(source);
       $("#test_grid").jqxGrid({
@@ -78,6 +54,8 @@ echo "<!-- " . $results_list . " -->";
         ],
         width: 570, height: 450
       });
+      $("#refresh_button").jqxButton({width: 150, height: 25});
+
 
     });
 
@@ -87,12 +65,10 @@ echo "<!-- " . $results_list . " -->";
     * { font-family: "PT Sans", sans-serif; }
   </style>
 
-</head>
-<body>
+</head><body>
 
 <div id="test_grid"></div>
+<br>
+<input type="button" id="refresh_button" value="Refresh" />
 
-</body>
-</html>
-
-
+</body></html>
