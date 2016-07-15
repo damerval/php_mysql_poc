@@ -14,7 +14,7 @@
   <title>Testing PHP and mysql</title>
   <link rel="stylesheet" href="js/jqwidgets/styles/jqx.base.css" type="text/css" />
   <link href='https://fonts.googleapis.com/css?family=PT+Sans' rel='stylesheet' type='text/css'>
-  <script type="text/javascript" language="javascript" src="js/jquery-1.11.1.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
   <script type="text/javascript" language="javascript" src="js/jqwidgets/jqxcore.js"></script>
   <script type="text/javascript" language="javascript" src="js/jqwidgets/jqxdata.js"></script>
   <script type="text/javascript" language="javascript" src="js/jqwidgets/jqxbuttons.js"></script>
