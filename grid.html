@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Grids</title>
+  <link rel="stylesheet" type="text/css" href="js/jqwidgets/styles/jqx.base.css">
+  <link rel="stylesheet" type="text/css" href="js/jqwidgets/styles/jqx.metro.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+  <script type="text/javascript" src="js/jqwidgets/jqxcore.js"></script>
+  <script type="text/javascript" src="js/jqwidgets/jqxdata.js"></script>
+  <script type="text/javascript" src="js/jqwidgets/jqxbuttons.js"></script>
+  <script type="text/javascript" src="js/jqwidgets/jqxscrollbar.js"></script>
+  <script type="text/javascript" src="js/jqwidgets/jqxmenu.js"></script>
+  <script type="text/javascript" src="js/jqwidgets/jqxlistbox.js"></script>
+  <script type="text/javascript" src="js/jqwidgets/jqxdropdownlist.js"></script>
+  <script type="text/javascript" src="js/jqwidgets/jqxdatatable.js"></script>
+  <script type="text/javascript" src="js/jqwidgets/jqxgrid.js"></script>
+  <script type="text/javascript" src="js/jqwidgets/jqxgrid.selection.js"></script>
+  <script type="text/javascript" src="js/jqwidgets/jqxgrid.columnsresize.js"></script>
+  <script type="text/javascript" src="js/jqwidgets/jqxgrid.filter.js"></script>
+  <script type="text/javascript" src="js/jqwidgets/jqxgrid.sort.js"></script>
+  <script type="text/javascript" src="js/jqwidgets/jqxgrid.pager.js"></script>
+  <script type="text/javascript" src="js/jqwidgets/jqxgrid.grouping.js"></script>
+
+  <!--------------------------------------------------------------------------------------------------------------------->
+
+  <style type="text/css">
+
+    #main_section {
+      width: 100%
+    }
+    #data_table {
+      float: left;
+    }
+    #tsql_detail {
+      width: 350px; margin-left: 10px;
+      background-color: #00AAE7;
+      height: 603px;
+      float: left; clear: right;
+    }
+    #tsql_text {
+      margin: 10px;
+      width: 325px;
+      height: 575px;
+    }
+
+  </style>
+
+<!--------------------------------------------------------------------------------------------------------------------->
+
+  <script type="application/javascript" language="javascript">
+
+  function dump(arr,level) {
+    var dumped_text = "";
+    if(!level) level = 0;
+
+    //The padding given at the beginning of the line.
+    var level_padding = "";
+    for(var j=0;j<level+1;j++) level_padding += "    ";
+
+    if(typeof(arr) == 'object') { //Array/Hashes/Objects
+      for(var item in arr) {
+
+
+        if (arr.hasOwnProperty(item)) var value = arr[item];
+
+        if(typeof(value) == 'object') { //If it is an array,
+          dumped_text += level_padding + "'" + item + "' ...\n";
+          dumped_text += dump(value,level+1);
+        } else {
+          dumped_text += level_padding + "'" + item + "' => \"" + value + "\"\n";
+        }
+      }
+    } else { //Stings/Chars/Numbers etc.
+      dumped_text = "===>"+arr+"<===("+typeof(arr)+")";
+    }
+    return dumped_text;
+  }
+
+  $(document).ready(function() {
+
+    var table_source = {
+      url: "db.php",
+      dataType: "json",
+      dataFields: [
+        { name: "DatabaseLogID", type: "int" },
+        { name: "PostTime", map: "PostTime>date", type: "date" },
+        { name: "DatabaseUser" },
+        { name: "Event" },
+        { name: "Schema" },
+        { name: "Object" },
+        { name: "TSQL" }
+      ],
+      id: "DatabaseLogID"
+    };
+
+    var adapt_table_source = new $.jqx.dataAdapter(table_source);
+
+    var _data_table = $("#data_table");
+
+    _data_table.jqxGrid({
+      width: 900, height: 601, theme: "metro",
+      source: adapt_table_source,
+      columns: [
+        { text: "ID", dataField: "DatabaseLogID", width: 100 },
+        { text: "Date", dataField: "PostTime", cellsFormat: "MM/dd/yyyy", width: 150 },
+        { text: "Event", dataField: "Event", width: 150 },
+        { text: "Schema", dataField: "Schema", width: 250 },
+        { text: "Object", dataField: "Object", width: 250 }
+      ],
+      pageable: true,
+      pageSize: 20,
+      rowsheight: 27, columnsheight: 25,
+      pagermode: 'simple'
+    });
+    _data_table.on('rowselect', function(event) {
+      $("#tsql_text").val(event.args.row['TSQL']);
+    });
+
+  });
+
+  </script>
+
+</head>
+
+<!--#################################################################################################################-->
+
+<body>
+
+  <section id="main_section">
+    <div id="data_table"></div>
+    <div id="tsql_detail">
+      <textarea title="TSQL text" id="tsql_text"
+                class="jqx-input-metro jqx-widget-metro jqx-widget-content-metro"></textarea>
+    </div>
+  </section>
+
+</body>
+</html>
