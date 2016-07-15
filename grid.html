@@ -43,6 +43,7 @@
       width: 325px;
       height: 575px;
     }
+    #returnlink { display: block; clear: both }
 
   </style>
 
@@ -80,7 +81,7 @@
   $(document).ready(function() {
 
     var table_source = {
-      url: "db.php",
+      url: "grid_source.php",
       dataType: "json",
       dataFields: [
         { name: "DatabaseLogID", type: "int" },
@@ -111,7 +112,8 @@
       pageable: true,
       pageSize: 20,
       rowsheight: 27, columnsheight: 25,
-      pagermode: 'simple'
+      pagermode: 'simple',
+      sortable: true
     });
     _data_table.on('rowselect', function(event) {
       $("#tsql_text").val(event.args.row['TSQL']);
@@ -134,6 +136,7 @@
                 class="jqx-input-metro jqx-widget-metro jqx-widget-content-metro"></textarea>
     </div>
   </section>
+  <a id="returnlink" title="Link to login" href="login.php">Return to login</a>
 
 </body>
 </html>
