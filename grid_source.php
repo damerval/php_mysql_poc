@@ -22,19 +22,27 @@ if ($conn === false) {
   die (print_r("Cannot connect.", true));
 }
 
-$sql = "select * from vDatabaseLog WHERE [Schema] = 'dbo' ";
+$sql = "select * from vDatabaseLog ";
 
 if (!empty($_SESSION)) {
   switch ($_SESSION['user_id']) {
-    case 3: break;
-    case 2: $sql .= "OR Event = 'CREATE_TABLE' "; break;
-    case 1: $sql .= "OR Event like ? "; break;
+    case 3: $sql .= "WHERE [schema] = 'dbo'"; break;
+    case 2: $sql .= "WHERE [schema] in ('dbo', 'Person', 'Production')"; break;
+    case 1: break;
     default: $sql = "";
   }
 } else $sql = "";
 
-$criterion1 = "%ALTER%";
-$stmt = sqlsrv_query($conn, $sql, array($criterion1));
+$event = "";
+
+if (isset($_GET['event'])) {
+  $event = $_GET['event'];
+  if ($event != "All") {
+    $sql .= " AND Event = ?";
+  }
+}
+
+$stmt = sqlsrv_query($conn, $sql, array($event));
 $data = array();
 
 while ($row = sqlsrv_fetch_array($stmt, SQLSRV_FETCH_ASSOC)) {

@@ -21,10 +21,13 @@
   <script type="text/javascript" src="js/jqwidgets/jqxgrid.sort.js"></script>
   <script type="text/javascript" src="js/jqwidgets/jqxgrid.pager.js"></script>
   <script type="text/javascript" src="js/jqwidgets/jqxgrid.grouping.js"></script>
+  <script type="text/javascript" src="js/jqwidgets/jqxtextarea.js"></script>
 
   <!--------------------------------------------------------------------------------------------------------------------->
 
   <style type="text/css">
+
+    #header_section { margin-bottom: 20px }
 
     #main_section {
       width: 100%
@@ -33,15 +36,11 @@
       float: left;
     }
     #tsql_detail {
-      width: 350px; margin-left: 10px;
+      margin-left: 10px;
+      padding-top: 10px; padding-left: 10px;
       background-color: #00AAE7;
-      height: 603px;
       float: left; clear: right;
-    }
-    #tsql_text {
-      margin: 10px;
-      width: 325px;
-      height: 575px;
+      width: 342px; height: 593px
     }
     #returnlink { display: block; clear: both }
 
@@ -119,6 +118,40 @@
       $("#tsql_text").val(event.args.row['TSQL']);
     });
 
+    var _schema_picker = $('#schema_picker');
+    var schema_picker_source = {
+      url: "selector_source.php",
+      dataType: 'json',
+      dataFields: [
+        { name: 'Choice' }
+      ],
+      id: 'Choice'
+    };
+    var schema_picker_adapter = new $.jqx.dataAdapter(schema_picker_source, {
+      loadComplete: function() {
+        var items = _schema_picker.jqxDropDownList('getItems');
+        _schema_picker.jqxDropDownList('clear');
+        _schema_picker.jqxDropDownList('addItem', {Choice: "All"});
+        for (var i=0; i<items.length; i++) {
+          _schema_picker.jqxDropDownList('addItem', items[i]);
+        }
+      }
+    });
+    _schema_picker.jqxDropDownList({
+      width: 300, height: 25, theme: 'metro',
+      source: schema_picker_adapter,
+      displayMember: 'Choice',
+      valueMember: 'Choice'
+    });
+    _schema_picker.on('select', function(event) {
+      var sel_obj = event.args.item;
+      table_source.url = "grid_source.php?event=" + sel_obj.value;
+      _data_table.jqxGrid('updatebounddata', 'data');
+    });
+
+    var _tsql_text = $("#tsql_text");
+    _tsql_text.jqxTextArea({ theme: 'metro', width: 330, height: 580 });
+
   });
 
   </script>
@@ -129,6 +162,9 @@
 
 <body>
 
+  <section id="header_section">
+    <div id="schema_picker"></div>
+  </section>
   <section id="main_section">
     <div id="data_table"></div>
     <div id="tsql_detail">
